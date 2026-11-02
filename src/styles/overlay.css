@@ -46,6 +46,11 @@
   cursor: grabbing !important;
   opacity: 0.92 !important;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7) !important;
+  transition: none !important;
+}
+
+.tp-pill-resetting {
+  transition: top 0.22s cubic-bezier(0.16, 1, 0.3, 1), left 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .tp-pill-grab {
@@ -56,6 +61,11 @@
   padding-right: 2px;
   color: var(--tp-muted);
   cursor: grab;
+  transition: color 0.15s ease;
+}
+
+.tp-pill-grab:hover {
+  color: var(--tp-text);
 }
 
 .tp-pill-btn {
@@ -118,8 +128,8 @@
 }
 
 .tp-hover-tag {
-  background-color: var(--tp-bg);
-  color: var(--tp-accent);
+  background-color: var(--tp-accent);
+  color: var(--tp-accent-text);
   font-size: 10px;
   font-weight: 700;
   padding: 2px 6px;

@@ -4,6 +4,7 @@ declare function getNotionViewUrl(project?: string): string;
 
 interface DevOverlayTheme {
     accent?: string;
+    accentText?: string;
     background?: string;
     border?: string;
     text?: string;

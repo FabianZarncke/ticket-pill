@@ -17,6 +17,7 @@ import { OVERLAY_STYLES } from "./styles/overlayCss";
 
 export interface DevOverlayTheme {
   accent?: string;
+  accentText?: string;
   background?: string;
   border?: string;
   text?: string;
@@ -33,6 +34,20 @@ interface ReactSourceInfo {
   fileName?: string;
   lineNumber?: number;
   componentName?: string;
+}
+
+function getContrastColor(hexColor?: string): string {
+  if (!hexColor) return "#ffffff";
+  let hex = hexColor.replace("#", "").trim();
+  if (hex.length === 3) {
+    hex = hex.split("").map((c) => c + c).join("");
+  }
+  if (hex.length !== 6) return "#ffffff";
+  const r = parseInt(hex.substring(0, 2), 16) / 255;
+  const g = parseInt(hex.substring(2, 4), 16) / 255;
+  const b = parseInt(hex.substring(4, 6), 16) / 255;
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 0.45 ? "#0f172a" : "#ffffff";
 }
 
 function detectModuleFromPath(pathname: string): string {
@@ -114,6 +129,7 @@ export function DevOverlay({
   // Floating Pill Dragging State
   const [pillPos, setPillPos] = useState<{ x: number; y: number } | null>(null);
   const [isDraggingPill, setIsDraggingPill] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const pillDragRef = useRef<{
     startX: number;
     startY: number;
@@ -121,6 +137,26 @@ export function DevOverlay({
     initialY: number;
   } | null>(null);
   const pillRef = useRef<HTMLDivElement | null>(null);
+
+  const handleResetPosition = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      localStorage.removeItem("tp-pill-pos");
+    } catch {}
+
+    const pillWidth = pillRef.current?.offsetWidth || 140;
+    const targetX = Math.max(10, window.innerWidth - pillWidth - 20);
+    const targetY = Math.max(10, window.innerHeight - 38 - 20);
+
+    setIsResetting(true);
+    setPillPos({ x: targetX, y: targetY });
+
+    setTimeout(() => {
+      setPillPos(null);
+      setIsResetting(false);
+    }, 240);
+  };
 
   // Modal Dragging State
   const [modalPos, setModalPos] = useState<{ x: number; y: number } | null>(null);
@@ -213,7 +249,7 @@ export function DevOverlay({
       const dx = e.clientX - pillDragRef.current.startX;
       const dy = e.clientY - pillDragRef.current.startY;
 
-      const pillWidth = pillRef.current?.offsetWidth || 230;
+      const pillWidth = pillRef.current?.offsetWidth || 140;
       const pillHeight = 38;
 
       const minX = 10;
@@ -417,10 +453,12 @@ export function DevOverlay({
     return null;
   }
 
-  // Active theme variables
+  // Active theme variables & automated contrast calculation
   const activeAccent = theme?.accent || accentColor || "#6366f1";
+  const accentTextColor = theme?.accentText || getContrastColor(activeAccent);
   const themeStyle = {
     "--tp-accent": activeAccent,
+    "--tp-accent-text": accentTextColor,
     "--tp-bg": theme?.background || "#18181b",
     "--tp-border": theme?.border || "rgba(255, 255, 255, 0.12)",
     "--tp-text": theme?.text || "#f8fafc",
@@ -453,24 +491,32 @@ export function DevOverlay({
           position: "fixed",
           top: pillPos ? `${pillPos.y}px` : "auto",
           bottom: pillPos ? "auto" : "20px",
-          left: pillPos ? `${pillPos.x}px` : "20px",
-          right: "auto",
+          left: pillPos ? `${pillPos.x}px` : "auto",
+          right: pillPos ? "auto" : "20px",
         }}
-        className={`tp-pill ${isDraggingPill ? "tp-pill-dragging" : ""}`}
+        className={`tp-pill ${isDraggingPill ? "tp-pill-dragging" : ""} ${
+          isResetting ? "tp-pill-resetting" : ""
+        }`}
       >
-        <div className="tp-pill-grab">
+        <div
+          className="tp-pill-grab"
+          onDoubleClick={handleResetPosition}
+          title="Ziehen zum Bewegen · Doppelklick zum Zurücksetzen"
+        >
           <GripVertical style={{ width: 14, height: 14 }} />
         </div>
 
-        {/* Review Mode Toggle Button */}
+        {/* Review Mode Toggle Button (Compact Icon-Only) */}
         <button
           type="button"
           onClick={() => setIsReviewMode(!isReviewMode)}
-          className={`tp-pill-btn ${isReviewMode ? "tp-pill-btn-active" : ""}`}
+          className={`tp-pill-btn tp-pill-icon-btn ${isReviewMode ? "tp-pill-btn-active" : ""}`}
           title={isReviewMode ? "Review-Modus aktiv: Klicke ein Element" : "Review-Modus aktivieren"}
         >
-          <Crosshair style={{ width: 14, height: 14 }} className={isReviewMode ? "animate-spin" : ""} />
-          <span>ReviewMode</span>
+          <Crosshair
+            style={{ width: 14, height: 14 }}
+            className={isReviewMode ? "animate-spin" : ""}
+          />
         </button>
 
         {/* Open Ticket Modal Button */}
