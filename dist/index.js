@@ -2,7 +2,7 @@
 import {
   getNotionViewUrl,
   isLocalhostClient
-} from "./chunk-TMCJKYX6.js";
+} from "./chunk-FRX46ESE.js";
 
 // src/index.tsx
 import { useState, useEffect, useRef, useCallback } from "react";

@@ -28,18 +28,14 @@ export interface DevTicket {
 }
 
 export const NOTION_VIEW_URLS: Record<string, string> = {
-  "Roadmap Tool":
-    "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=406444b1daac81da8aca000cc2087e27",
-  "roadmap-tool":
-    "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=406444b1daac81da8aca000cc2087e27",
   "Skaleo One":
     "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=3ff444b1daac81c9b029000c81a7d04a",
   "skaleo-one":
     "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=3ff444b1daac81c9b029000c81a7d04a",
-  "one-crm":
-    "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=3ff444b1daac814e999e000c434b12e0",
-  "ONE crm":
-    "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=3ff444b1daac814e999e000c434b12e0",
+  "Traumleben Framework":
+    "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=3ff444b1daac81d4bd2a000c3cde80fe",
+  "traumleben-framework":
+    "https://app.notion.com/p/0cd916d21e9b4b89a6f49821c83f104a?v=3ff444b1daac81d4bd2a000c3cde80fe",
 };
 
 export const DEFAULT_NOTION_BOARD_URL =
